@@ -1,0 +1,36 @@
+$header-height:40px !default;
+$base-background:#f7f9fa !default;
+$base-box-shadow:0px 1px 2px 0px rgba(0, 0, 0, 0.08) !default;
+$theme-color:#f10215 !default;
+$border_style: 1px solid #ddd;
+$image-box-color:#cbcbcb;
+$base-font-family:"Helvetica Neue",
+Helvetica,
+Arial,
+sans-serif;
+$content-left:880px;
+@mixin placeholderStyle($font:14px, $color:#ccc) {
+    //chrome谷歌浏览器，Safari苹果浏览器
+    input::-webkit-input-placeholder {
+        /* WebKit browsers */
+        color: $color;
+        font-size: $font;
+    }
+    //firefox火狐浏览器
+    input:-moz-placeholder {
+        /* Mozilla Firefox 4 to 18 */
+        color: $color;
+        font-size: $font;
+    }
+    input::-moz-placeholder {
+        /* Mozilla Firefox 19+ */
+        color: $color;
+        font-size: $font;
+    }
+    //IE浏览器
+    input:-ms-input-placeholder {
+        /* Internet Explorer 10+ */
+        color: $color;
+        font-size: $font;
+    }
+}

@@ -1,0 +1,156 @@
+系统检测:
+描述: Windows(R) Operating System, VOLUME_MAK channel
+版本构建号: 15063.1446
+平台: x64
+部份KEY: 3V644
+版本: Enterprise
+状态 Notification
+
+开始激活于 12 5月 2019 13:55:40...
+
+正在安装KEY: XGVPP-NMH47-7TTHJ-W3FW7-8HV2C...
+成功地安装了产品密钥 XGVPP-NMH47-7TTHJ-W3FW7-8HV2C。
+
+
+
+系统检查:
+产品: Windows(R) Operating System, OEM_COA_NSLP channel
+版本构建号: 15063.1446
+平台: x64
+部份KEY: 8HV2C
+版本: Enterprise
+状态 Notification
+
+开始激活于 12 5月 2019 13:57:54...
+
+正在安装KEY: XGVPP-NMH47-7TTHJ-W3FW7-8HV2C...
+成功地安装了产品密钥 XGVPP-NMH47-7TTHJ-W3FW7-8HV2C。
+
+为 数字激活 生成门票...
+
+应用门票 GenuineTicket.xml...
+
+Done.
+Converted license Microsoft.Windows.4.X19-99683_8wekyb3d8bbwe and stored at (null).
+Successfully converted 1 licenses from genuine authorization tickets on disk.
+Done.
+
+门票应用成功。
+
+WU is disabled...
+正在设置WU为自动...
+正在启动 WindowsUpdate...
+[错误] 服务启动失败: Service Disabled [Start: 14]
+
+ClipSVC 已启用: MANUAL Functional
+
+wlidsvc 已启用: MANUAL Functional
+
+sppsvc 已启用: AUTO Functional
+
+正在激活...
+正在激活 Windows(R), Enterprise edition (8b351c9c-f398-4515-9900-09df49427262) ...
+错误: 0xC004C003 激活服务器确定指定的产品密钥被阻止
+
+正在停止 WindowsUpdate...
+服务已停止(或已停止运行)
+
+将WU设置为禁用...
+
+激活 Enterprise 失败. 许可状态: Notification
+
+
+系统检查:
+产品: Windows(R) Operating System, OEM_COA_NSLP channel
+版本构建号: 15063.1446
+平台: x64
+部份KEY: 8HV2C
+版本: Enterprise
+状态 Notification
+
+开始激活于 12 5月 2019 13:59:05...
+
+正在安装KEY: XGVPP-NMH47-7TTHJ-W3FW7-8HV2C...
+成功地安装了产品密钥 XGVPP-NMH47-7TTHJ-W3FW7-8HV2C。
+
+为 数字激活 生成门票...
+
+应用门票 GenuineTicket.xml...
+
+Done.
+Converted license Microsoft.Windows.4.X19-99683_8wekyb3d8bbwe and stored at (null).
+Successfully converted 1 licenses from genuine authorization tickets on disk.
+Done.
+
+门票应用成功。
+
+WU is disabled...
+正在设置WU为自动...
+正在启动 WindowsUpdate...
+[错误] 服务启动失败: Service Disabled [Start: 14]
+
+ClipSVC 已启用: MANUAL Functional
+
+wlidsvc 已启用: MANUAL Functional
+
+sppsvc 已启用: AUTO Functional
+
+正在激活...
+正在激活 Windows(R), Enterprise edition (8b351c9c-f398-4515-9900-09df49427262) ...
+错误: 0xC004C003 激活服务器确定指定的产品密钥被阻止
+
+正在停止 WindowsUpdate...
+服务已停止(或已停止运行)
+
+将WU设置为禁用...
+
+激活 Enterprise 失败. 许可状态: Notification
+
+
+系统检查:
+产品: Windows(R) Operating System, OEM_COA_NSLP channel
+版本构建号: 15063.1446
+平台: x64
+部份KEY: 8HV2C
+版本: Enterprise
+状态 Notification
+
+开始激活于 12 5月 2019 14:19:24...
+
+正在安装KEY: XGVPP-NMH47-7TTHJ-W3FW7-8HV2C...
+成功地安装了产品密钥 XGVPP-NMH47-7TTHJ-W3FW7-8HV2C。
+
+为 数字激活 生成门票...
+
+应用门票 GenuineTicket.xml...
+
+Done.
+Converted license Microsoft.Windows.4.X19-99683_8wekyb3d8bbwe and stored at (null).
+Successfully converted 1 licenses from genuine authorization tickets on disk.
+Done.
+
+门票应用成功。
+
+WU is disabled...
+正在设置WU为自动...
+正在启动 WindowsUpdate...
+服务启动成功: Functional [Start: 0]
+
+ClipSVC 已启用: MANUAL Functional [Start: 0]
+
+wlidsvc 已启用: MANUAL Functional
+
+sppsvc 已启用: AUTO Functional [Start: 0]
+
+正在激活...
+正在激活 Windows(R), Enterprise edition (8b351c9c-f398-4515-9900-09df49427262) ...
+成功地激活了产品。
+
+正在停止 WindowsUpdate...
+服务已成功停止
+
+将WU设置为禁用...
+
+激活 Enterprise 成功!
+
+

@@ -1,0 +1,33 @@
+@import "./_commonScss";
+/deep/.ant-input:hover {
+    border-color: $theme-color !important;
+}
+
+/deep/.ant-input:focus {
+    border-color: $theme-color !important;
+    box-shadow: 0 0 0 2px rgba(241, 2, 21, 0.2) !important;
+}
+
+/deep/.ant-select-selection:hover {
+    border-color: $theme-color;
+}
+
+/deep/.ant-select-open .ant-select-selection {
+    border-color: $theme-color;
+    box-shadow: 0 0 0 2px rgba(241, 2, 21, 0.2);
+}
+
+/deep/ .ant-select-selection:focus,
+.ant-select-selection:active {
+    border-color: $theme-color;
+    box-shadow: 0 0 0 2px rgba(241, 2, 21, 0.2);
+}
+
+/deep/.ant-cascader-picker:hover .ant-cascader-input {
+    border-color: $theme-color;
+}
+
+/deep/.ant-cascader-picker:focus .ant-cascader-input {
+    border-color: $theme-color;
+    box-shadow: 0 0 0 2px rgba(241, 2, 21, 0.2);
+}
