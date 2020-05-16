@@ -13,7 +13,7 @@
       </div>
       <div class="common orderNumber">
         <span>{{ isShowInfo.isOrder ? "订单" : "询价单" }}编号：</span>
-        <span>{{ isShowInfo.isOrder ? data.order_sn : data.enquirySn }}</span>
+        <span>{{ isShowInfo.isOrder ? data.order_id : data.order_id }}</span>
       </div>
       <div class="common orderSubmitTime">
         <span class="svgBox">
@@ -22,7 +22,9 @@
           </svg>
         </span>
         <span>{{ isShowInfo.isOrder ? "订单" : "询价单" }}提交时间：</span>
-        <span>{{ data.createdOn ? data.createdOn.substring(0, 16) : "" }}</span>
+        <span>{{
+          data.create_time ? data.create_time.substring(0, 16) : ""
+        }}</span>
       </div>
       <div
         class="common userName"
@@ -65,7 +67,7 @@
         <span>{{
           isShowInfo.isOrder
             ? data.order_status == 1
-              ? "待接单"
+              ? "待支付"
               : data.order_status == 2
               ? "待发货"
               : data.order_status == 3

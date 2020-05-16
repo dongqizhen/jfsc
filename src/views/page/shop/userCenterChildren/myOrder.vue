@@ -108,8 +108,8 @@
         ],
         titleArr: ["产品图片", "产品名称", "单价", "数量", "实付金额", "操作"],
         getOrderData: {
-          currentPage: "1",
-          countPerPage: "10",
+          page: "1",
+          size: "10",
           storeId: "", //类型：String 备注：商铺id，不传时默认查询用户的
           name: "", //类型：String 备注：商品名称（搜索）
           orderStatus: 1, //类型：String 备注：订单状态：1：待接单，2：待发货，3：待收货，4：待评价，5：已完成，6：退货，7：已关闭
@@ -231,13 +231,13 @@
       },
       async getOrderList() {
         this.isOrderLoading = true;
-        return await _getData("/order/orderList", this.getOrderData)
+        return await _getData("/api/order/orderList", this.getOrderData)
           .then(data => {
             console.log("获取订单列表：", data);
             this.checkAll = false;
             this.checkedList = [];
-            this.data = data.data;
-            this.paginationData = data;
+            this.data = data.data.list;
+            this.paginationData = data.data;
           })
           .then(() => {
             this.isOrderLoading = false;
@@ -274,7 +274,7 @@
           query: { keyId: "3" }
         });
       }
-      _getDataAll([this.getOrderList(), this.getOrderNumber()]).then(() => {
+      _getDataAll([this.getOrderList() /* this.getOrderNumber()*/]).then(() => {
         this.isLoading = false;
       });
     },

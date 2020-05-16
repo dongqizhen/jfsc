@@ -3,10 +3,10 @@
     <a-pagination
       ref="page"
       showQuickJumper
-      :total="data.amount || data.count"
+      :total="data.amount || data.pages"
       @change="onPaginationChange"
       :defaultPageSize="defaultPageSize"
-      :pageSize="data.pageSize || data.countPerPage || data.numsPerPage"
+      :pageSize="data.page_num || data.countPerPage || data.numsPerPage"
       v-model="current"
     />
     <div class="sureBtn" @click="sureFun($event)">确定</div>

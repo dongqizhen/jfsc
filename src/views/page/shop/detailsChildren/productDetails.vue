@@ -40,34 +40,52 @@
             </div>
           </div>
           <div class="main">
-            <h2>{{ productInfo.name }}</h2>
+            <h2>{{ productInfo.title }}</h2>
             <div class="price">
               <span>价格:</span>
-              <span v-show="productInfo.retail_price != '询价'">
-                {{ productInfo.retail_price }}
+              <span v-if="!price">
+                ¥{{ productInfo.retail_price }}-{{ productInfo.max_price }}
               </span>
-              <!-- <span>询价</span> -->
+              <span v-else>¥{{ price }}</span>
             </div>
             <ul class="params">
-              <li></li>
-              <li></li>
-              <li></li>
-              <li></li>
+              <li v-if="sku">
+                {{ sku.attribute.name1 }}:
+                <span
+                  v-for="val in JSON.parse(sku.attribute.list1)"
+                  :key="val.name"
+                  :class="val.name == sku_select.attribute1 && 'active'"
+                  @click="click1(val)"
+                  >{{ val.name }}
+                </span>
+              </li>
+              <li v-if="sku.attribute.name2">
+                {{ sku.attribute.name2 }}:
+                <span
+                  v-for="(val, i) in JSON.parse(sku.attribute.list2)"
+                  :key="val.name"
+                  :class="val.name == sku_select.attribute2 && 'active'"
+                  @click="click2(val)"
+                  >{{ val.name }}</span
+                >
+              </li>
             </ul>
-            <div
-              class="btn"
-              v-show="productInfo.is_on_sale && shopdetails.auditStatus == 2"
-            >
+            <div>
+              数量：
+              <el-input-number
+                v-model="num"
+                size="mini"
+                :min="1"
+                label="描述文字"
+              ></el-input-number>
+            </div>
+
+            <div class="btn">
               <a-button @click="addCarSuccess">
                 <svg class="icon" aria-hidden="true">
                   <use xlink:href="#iconbaisegouwuche"></use>
                 </svg>
-                加入选购单
-              </a-button>
-              <a-button
-                @click.self="storeProduct"
-                v-text="isCollection ? '已收藏' : '收藏商品'"
-              >
+                立即购买
               </a-button>
             </div>
           </div>
@@ -224,6 +242,33 @@
       <shop-card-vue v-if="shopdetails" :detail="shopdetails"></shop-card-vue>
     </div> -->
     <login-modal-vue :Visible="visible" :type="type"></login-modal-vue>
+
+    <el-dialog title="收货地址" :visible.sync="dialogFormVisible">
+      <el-form :model="form">
+        <el-form-item label="收货地址" :label-width="formLabelWidth">
+          <el-select
+            v-model="address_id"
+            placeholder="请选择收货地址"
+            style="width:100%"
+          >
+            <el-option
+              v-for="item in addressList"
+              :key="item.id"
+              :label="
+                `${item.region} ${item.address} ${item.username} ${item.phone}`
+              "
+              :value="item.id"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <a-button @click="dialogFormVisible = false">取 消</a-button>
+        <a-button type="primary" @click="createOrder">
+          确 定
+        </a-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -242,7 +287,8 @@
   import { mapState } from "vuex";
   import { _getData } from "../../../../config/getData";
   import pagination from "../../../../components/common/pagination";
-
+  import { Form, Select, Option, Input, Button } from "element-ui";
+  import "element-ui/lib/theme-chalk/index.css";
   export default {
     metaInfo() {
       return {
@@ -257,7 +303,20 @@
     },
     data() {
       return {
+        dialogFormVisible: false,
+        form: {
+          name: "",
+          region: "",
+          date1: "",
+          date2: "",
+          delivery: false,
+          type: [],
+          resource: "",
+          desc: ""
+        },
+        formLabelWidth: "120px",
         productInfo: "", //产品详情
+        sku: "",
         specificationInfo: "", //规格参数
         comment: "", //评价
         imgarr: [], //放大镜轮播
@@ -274,7 +333,17 @@
         isCollection: 0, //是否收藏产品
         shopdetails: "",
         isLoading: true,
-        bigImageIsShow: false
+        bigImageIsShow: false,
+        skuList: [],
+        num: 1,
+        sku_id: "",
+        address_id: "",
+        price: "",
+        addressList: [],
+        sku_select: {
+          attribute1: "",
+          attribute2: ""
+        }
       };
     },
     components: {
@@ -282,11 +351,45 @@
       IconFont,
       shopCardVue,
       loginModalVue,
-      pagination
+      pagination,
+      Form,
+      Select,
+      Option,
+      Input,
+      Button
     },
     methods: {
       onPaginationChange(page) {
         this.getCommentList(page);
+      },
+      createOrder() {
+        if (this.address_id == "") {
+          this.$message.warning("请选择地址");
+          return;
+        }
+        this.dialogFormVisible = false;
+        _getData("/api/order/create", {
+          address_id: this.address_id,
+          sku: {
+            sku_id: this.sku_id,
+            quantity: this.num
+          }
+        }).then(data => {
+          if (data.code != 500 && data.code != 1 && data.code != 400) {
+            this.$message.success("订单创建成功");
+            this.$router.push("/userCenter/myOrder");
+          }
+        });
+      },
+      click1(val) {
+        console.log(val);
+        this.$set(this.sku_select, "attribute1", val.name);
+        console.log(this.sku_select);
+        //this.sku_select.attribute1 = val.name;
+      },
+      click2(val) {
+        this.$set(this.sku_select, "attribute2", val.name);
+        // this.sku_select.attribute2 = val.name;
       },
       storeProduct() {
         if (this.isLogin) {
@@ -346,12 +449,30 @@
           return;
         }
 
-        _getData("cart/addCart", {
-          goodsId: this.$route.params.id,
-          number: 1
+        console.log(2222, this.productInfo);
+        if (this.sku.attribute.name2 != "") {
+          if (
+            this.sku_select.attribute1 == "" ||
+            this.sku_select.attribute2 == ""
+          ) {
+            this.$message.warning("请选择商品属性");
+          } else {
+            this.dialogFormVisible = true;
+          }
+        } else {
+          if (this.sku_select.attribute1 == "") {
+            this.$message.warning("请选择商品属性");
+          } else {
+            this.dialogFormVisible = true;
+          }
+        }
+
+        _getData("/api/address/list", {
+          page: 1,
+          size: 9999
         }).then(data => {
           if (data.code != 500 && data.code != 400 && data.code != 1) {
-            this.visible = true;
+            this.addressList = data.data.list;
           }
         });
       },
@@ -396,6 +517,39 @@
         });
       }
     },
+    watch: {
+      sku_select: {
+        handler(newVal, oldName) {
+          if (this.sku.attribute.name2 != "") {
+            if (newVal.attribute1 != "" && newVal.attribute2 != "") {
+              this.skuList.map((v, i) => {
+                if (
+                  newVal.attribute1 == v.attribute1 &&
+                  newVal.attribute2 == v.attribute2
+                ) {
+                  this.price = v.retail_price;
+                  this.sku_id = v.id;
+                }
+              });
+            }
+          } else {
+            if (newVal.attribute1 != "") {
+              this.skuList.map((v, i) => {
+                if (
+                  newVal.attribute1 == v.attribute1 &&
+                  newVal.attribute2 == v.attribute2
+                ) {
+                  this.price = v.retail_price;
+                  this.sku_id = v.id;
+                }
+              });
+            }
+          }
+        },
+        immediate: true,
+        deep: true
+      }
+    },
     created() {
       //获取产品详情
       _getData("/api/item/detail", {
@@ -404,7 +558,9 @@
         .then(data => {
           console.log("产品详情", data);
           this.productInfo = data.data.item;
+          this.sku = data.data.item_sku;
           this.specificationInfo = data.specificationInfo;
+          this.skuList = data.data.item_sku.skus;
           // this.comment = data.comment ? data.comment : [];
           this.title = this.productInfo.title + "-积分商城";
 
@@ -666,9 +822,21 @@
               display: flex;
               justify-content: flex-start;
               margin: 16px 0;
+              align-items: center;
               > span {
                 display: flex;
-                justify-content: flex-start;
+                //justify-content: flex-start;
+                height: 32px;
+                width: 70px !important;
+                justify-content: center;
+                margin-left: 10px;
+                border: 1px solid #666;
+                align-items: center;
+                cursor: pointer;
+                &:hover,
+                &.active {
+                  border-color: red;
+                }
                 > span {
                   font-size: 14px;
                   color: #999;
@@ -696,7 +864,7 @@
                   margin-right: 5px;
                 }
                 &:last-child {
-                  flex: 1;
+                  //flex: 1;
                   > span {
                   }
                 }
@@ -705,9 +873,9 @@
           }
           .btn {
             display: flex;
-            justify-content: flex-start;
-            margin-top: 3px;
-            /deep/ .ant-btn-default {
+            //  justify-content: center;
+            margin-top: 30px;
+            /deep/ .ant-btn {
               display: flex;
               background-image: linear-gradient(90deg, #ff4e1a 0%, #f10000 100%);
               border-radius: 3px;

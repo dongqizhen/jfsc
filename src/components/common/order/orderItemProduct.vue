@@ -1,51 +1,23 @@
 <template>
   <div class="productInfoBox">
     <div class="productInfo">
-      <div
-        class="itemProduct"
-        v-for="product in data.goodsList"
-        :key="product.id"
-        @click="
-          turnToProductDetail(
-            product.goods_id,
-            data.storeId,
-            product.is_on_sale
-          )
-        "
-      >
-        <span><img :src="product.list_pic_url"/></span>
-        <span>{{ product.goods_name }}</span>
+      <div class="itemProduct" @click="turnToProductDetail()">
+        <span><img :src="data.order_sku.item_title_photo"/></span>
+        <span>{{ data.order_sku.item_title }}</span>
         <span>
           ￥{{
-            product.retail_price ? product.retail_price.toFixed(2) : "0.00"
+            data.order_sku.unit_goods_price
+              ? data.order_sku.unit_goods_price.toFixed(2)
+              : "0.00"
           }}
         </span>
-        <span>{{ product.number }}</span>
+        <span>{{ data.order_sku.buy_quantity }}</span>
       </div>
     </div>
     <div class="actualPrice">
-      ￥{{ data.actual_price ? data.actual_price.toFixed(2) : "0.00" }}
+      ￥{{ data.pay_price ? data.pay_price.toFixed(2) : "0.00" }}
     </div>
     <div class="operating">
-      <div class="lookPay" ref="lookPay" @click="addModal(data.id)">
-        {{
-          data.order_status == 1
-            ? ""
-            : data.isPayProve == 0
-            ? isShowInfo.isMerchant
-              ? isShowInfo.isDetail
-                ? data.order_status != 6
-                  ? "--"
-                  : ""
-                : ""
-              : data.order_status == 6 || data.order_status == 7
-              ? isShowInfo.isDetail
-                ? "--"
-                : ""
-              : "提交支付证明"
-            : "查看支付证明"
-        }}
-      </div>
       <div
         class="sure"
         @click="confirmOrder(data.id)"
@@ -104,21 +76,7 @@
       >
         申请退货
       </div>
-      <div class="lookOrderDetail" v-if="!isShowInfo.isDetail">
-        <router-link
-          tag="a"
-          target="_blank"
-          :to="{
-            path: `orderDetail/${data.id}`,
-            query: {
-              keyId: isShowInfo.isMerchant ? '7' : '3',
-              topTitle: isShowInfo.isMerchant ? 'sub2' : 'sub1'
-            }
-          }"
-        >
-          查看订单详情
-        </router-link>
-      </div>
+
       <div
         class="deleteOrder"
         v-if="

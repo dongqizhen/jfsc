@@ -7,16 +7,18 @@
           {{
             isExpress
               ? `快递公司：${data.shipping_name}`
-              : `收货人：${data.consignee}`
+              : `收货人：${data.order_address.receiver_name}`
           }}
         </span>
-        <span :class="{ isShow: isExpress }">联系方式：{{ data.mobile }}</span>
+        <span :class="{ isShow: isExpress }"
+          >联系方式：{{ data.order_address.phone }}</span
+        >
       </div>
       <div>
         {{
           isExpress
             ? `快递单号：${data.shipping_no}`
-            : `收货地址：${data.address}`
+            : `收货地址：${data.order_address.province}${data.order_address.city}${data.order_address.county}${data.order_address.detail}`
         }}
       </div>
     </div>
