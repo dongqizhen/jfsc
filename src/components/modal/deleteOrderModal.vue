@@ -31,7 +31,7 @@
 
 <script>
   import modal from "./modal.vue";
-  import { _getData } from "../../config/getData";
+  import { _getData, __getData } from "../../config/getData";
   import { mapState } from "vuex";
   export default {
     data() {
@@ -80,30 +80,17 @@
         window.open(href, "_blank");
       },
       sure() {
-        if (this.deleteObj.isOrder) {
-          console.log(this.deleteObj.deleteId);
-          _getData("/order/deleteOrder", {
-            ids: this.deleteObj.deleteId,
-            flag: this.deleteObj.isMerchant ? "shop" : "user"
-          }).then(data => {
-            console.log(data);
-            this.$message.success("订单删除成功", 1);
-            this.visible = false;
-          });
-        } else {
-          _getData(
-            `${this.$API_URL.HYGLOGINURL}/server/userAddress!request.action`,
-            {
-              method: "deleteUserAddressList",
-              userid: this.userInfo.id,
-              token: "",
-              params: { userAddressList: [this.deleteObj.deleteId] }
-            }
-          ).then(data => {
-            console.log(data);
-            this.visible = false;
-          });
-        }
+        // if (this.deleteObj.isOrder) {
+        console.log(this.deleteObj.deleteId);
+        __getData("/api/address/delete", {
+          id: this.deleteObj.deleteId,
+          flag: this.deleteObj.isMerchant ? "shop" : "user"
+        }).then(data => {
+          console.log(data);
+          this.$message.success("订单删除成功", 1);
+          this.visible = false;
+        });
+        // }
       }
     },
     watch: {

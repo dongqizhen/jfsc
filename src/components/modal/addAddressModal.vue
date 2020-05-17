@@ -8,7 +8,7 @@
             <div class="right-box">
               <a-input
                 placeholder="请输入收货人姓名"
-                v-model="submitData.userName"
+                v-model="submitData.username"
               ></a-input>
               <span class="testTrue" v-if="nameIsShow">
                 <i>*</i>
@@ -31,6 +31,13 @@
           </div>
           <div class="common name">
             <div class="left-box">所在地区</div>
+            <!-- <el-cascader
+              :options="option"
+              :load-data="loadData"
+              placeholder="Please select"
+              change-on-select
+              @change="onChange"
+            /> -->
             <div class="right-box">
               <div class="select-area">
                 <span @click="selectArea">
@@ -105,7 +112,7 @@
             <div class="right-box">
               <a-input
                 placeholder="请输入邮政编码"
-                v-model="submitData.postalCode"
+                v-model="submitData.postcode"
               ></a-input>
               <span class="testTrue" v-if="codeIsShow">
                 <i>*</i>
@@ -145,12 +152,24 @@
 
 <script>
   import modal from "./modal.vue";
-  import { _getData } from "../../config/getData";
+  import { _getData, __getData } from "../../config/getData";
   import { mapState } from "vuex";
   export default {
     data() {
       return {
         visible: false,
+        option: [
+          {
+            value: "zhejiang",
+            label: "Zhejiang",
+            isLeaf: false
+          },
+          {
+            value: "jiangsu",
+            label: "Jiangsu",
+            isLeaf: false
+          }
+        ],
         options: {
           title: "新增收货地址",
           closable: true,
@@ -159,11 +178,11 @@
           centered: false
         },
         submitData: {
-          userName: "",
+          username: "",
           phone: "",
           address: "",
-          userLocation: "",
-          postalCode: "",
+          region: "",
+          postcode: "",
           status: ""
         },
         isShow: false,
@@ -207,6 +226,30 @@
       modal
     },
     methods: {
+      onChange(value) {
+        console.log(value);
+      },
+      loadData(selectedOptions) {
+        const targetOption = selectedOptions[selectedOptions.length - 1];
+        targetOption.loading = true;
+
+        // load options lazily
+        setTimeout(() => {
+          targetOption.loading = false;
+          targetOption.children = [
+            {
+              label: `${targetOption.label} Dynamic 1`,
+              value: "dynamic1"
+            },
+            {
+              label: `${targetOption.label} Dynamic 2`,
+              value: "dynamic2"
+            }
+          ];
+          this.options = [...this.options];
+        }, 1000);
+      },
+
       selectArea() {
         this.areaIsShow = !this.areaIsShow;
         this.isActive = 0;
@@ -216,10 +259,10 @@
         console.log(val);
         this.province = val.name;
 
-        _getData("address/getCity", { provinceId: val.id })
+        _getData("/api/address/getCity", { pId: val.id })
           .then(data => {
             console.log(data);
-            this.cityArr = data;
+            this.cityArr = data.data;
           })
           .then(() => {
             this.isActive = 1;
@@ -251,7 +294,7 @@
       },
       saveAddress() {
         console.log(this.submitData);
-        if (!this.submitData.userName) {
+        if (!this.submitData.username) {
           this.nameIsShow = true;
           return;
         } else {
@@ -273,7 +316,7 @@
           return;
         } else {
           this.selectAreaIsShow = false;
-          this.submitData.userLocation = this.selectMainArea;
+          this.submitData.region = this.selectMainArea;
         }
         if (!this.submitData.address) {
           this.addressDetailIsShow = true;
@@ -281,11 +324,11 @@
         } else {
           this.addressDetailIsShow = false;
         }
-        if (!this.submitData.postalCode) {
+        if (!this.submitData.postcode) {
           this.codeIsShow = true;
           return;
         } else {
-          if (!/[1-9]\d{5}(?!\d)/.test(this.submitData.postalCode)) {
+          if (!/[1-9]\d{5}(?!\d)/.test(this.submitData.postcode)) {
             this.codeIsShow = true;
             return;
           } else {
@@ -294,28 +337,16 @@
         }
         if (this.submitData.id) {
           _getData(
-            `${this.$API_URL.HYGLOGINURL}/server/userAddress!request.action`,
-            {
-              method: "updateUserAddress",
-              userid: this.userInfo.id,
-              token: "",
-              params: this.submitData
-            }
+            `/api/address/update`,
+
+            this.submitData
           ).then(data => {
             console.log(data);
             this.visible = false;
             this.$parent.visible = false;
           });
         } else {
-          _getData(
-            `${this.$API_URL.HYGLOGINURL}/server/userAddress!request.action`,
-            {
-              method: "addUserAddress",
-              userid: this.userInfo.id,
-              token: "",
-              params: this.submitData
-            }
-          ).then(data => {
+          _getData(`/api/address/add`, this.submitData).then(data => {
             console.log(data);
             this.visible = false;
           });
@@ -323,9 +354,9 @@
       }
     },
     mounted() {
-      _getData("address/getProvince", {}).then(data => {
+      _getData("/api/address/getProvince", {}).then(data => {
         console.log("data", data);
-        this.area = data;
+        this.area = data.data;
       });
     },
     watch: {
@@ -347,28 +378,20 @@
       editId(newVal) {
         console.log(newVal);
         if (typeof newVal == "number") {
-          _getData(
-            `${this.$API_URL.HYGLOGINURL}/server/userAddress!request.action`,
-            {
-              method: "getUserAddressById",
-              userid: this.userInfo.id,
-              token: "",
-              params: { userAddressId: newVal }
-            }
-          ).then(data => {
+          __getData(`/api/address/detail`, { id: newVal }).then(data => {
             console.log(data);
-            this.submitData = data.result;
-            this.selectMainArea = data.result.userLocation;
+            this.submitData = data.data;
+            this.selectMainArea = data.data.region;
             this.submitData.id = newVal;
             this.isSpace = false;
           });
         } else {
           this.submitData = {
-            userName: "",
+            username: "",
             phone: "",
             address: "",
-            userLocation: "",
-            postalCode: "",
+            region: "",
+            postcode: "",
             status: ""
           };
           this.selectMainArea = "请选择省/市";

@@ -12,8 +12,8 @@
       <ul v-if="userAddressList.length > 0">
         <li v-for="item in userAddressList" :key="item.id">
           <div class="left-box">
-            <div class="itemTr">{{ item.userName }}<span>收</span></div>
-            <div class="itemTr">{{ item.address }}</div>
+            <div class="itemTr">{{ item.username }}<span>收</span></div>
+            <div class="itemTr">{{ item.region }}{{ item.address }}</div>
             <div class="itemTr">{{ item.phone }}</div>
           </div>
           <div class="right-box">
@@ -50,7 +50,7 @@
 <script>
   import _ from "lodash";
   import { mapState } from "vuex";
-  import { _getData } from "../../../../config/getData";
+  import { _getData, __getData } from "../../../../config/getData";
   import commonTitle from "../../../../components/common/merchantRightCommonTitle";
   import addAddressModal from "../../../../components/modal/addAddressModal";
   import deleteOrderModal from "../../../../components/modal/deleteOrderModal";
@@ -102,17 +102,9 @@
         this.deleteObj.deleteId = id;
       },
       getAddressList() {
-        _getData(
-          `${this.$API_URL.HYGLOGINURL}/server/userAddress!request.action`,
-          {
-            method: "appPageList",
-            userid: this.userInfo.id,
-            token: "",
-            params: { currentPage: 1, countPerPage: 10 }
-          }
-        ).then(data => {
+        _getData(`/api/address/list`, { page: 1, size: 999 }).then(data => {
           console.log(data);
-          this.userAddressList = data.result.UserAddressList;
+          this.userAddressList = data.data.list;
         });
       }
     },

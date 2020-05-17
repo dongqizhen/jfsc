@@ -77,7 +77,7 @@
     },
     mounted() {
       console.log(this.data);
-      this.current = this.data.currentPage;
+      this.current = this.data.page_num;
     }
   };
 </script>

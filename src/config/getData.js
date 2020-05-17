@@ -7,9 +7,7 @@ export async function _getData(url = '', data = {}, config = {}) {
         delete data.userid
     }
     return await axios.post(url, {
-        ... {
-
-        },
+        ... {},
 
         ...data
     }, config).then(data => {
@@ -35,7 +33,9 @@ export async function _getData(url = '', data = {}, config = {}) {
             //console.log(router)
             if (!(data.code == 1116 || data.code == 1106)) {
                 const v = router.app.$children[0];
-                v.$message.error(data.msg)
+                v
+                    .$message
+                    .error(data.msg)
 
             }
 
@@ -43,17 +43,34 @@ export async function _getData(url = '', data = {}, config = {}) {
         }
 
     }).catch(err => {
-        // /* if (errorCallBack) {
-        //     errorCallBack(err)
-        // } else {
-        //     console.log(err)
+        // /* if (errorCallBack) {     errorCallBack(err) } else {     console.log(err)
         // } */
     })
 }
 
 export async function _getDataAll(funArr = []) {
-    return await axios.all(funArr).then(axios.spread(function(acct, perms) {
-        // 两个请求现在都执行完成
-        return true
-    }));
+    return await axios
+        .all(funArr)
+        .then(axios.spread(function(acct, perms) {
+            // 两个请求现在都执行完成
+            return true
+        }));
+}
+
+export async function __getData(url = '', data = {}, config = {}) {
+    return await axios.get(url, {
+        params: {... {},
+            ...data
+        }
+    }, config).then((data) => {
+        if (data.code == 0 || data.code == 200) {
+            // console.log(router)
+            if (data.code == 200) {
+                return data
+            } else {
+                return data.result
+            }
+
+        }
+    })
 }

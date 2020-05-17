@@ -25,15 +25,19 @@
       >
         确认接单
       </div>
-      <div
+      <!-- <div
         class="lookOrderDetail"
-        v-if="
-          !isShowInfo.isMerchant &&
-            (data.order_status == 1 || data.order_status == 2)
-        "
+        v-if="!isShowInfo.isMerchant && data.order_status == 1"
         @click="cancelOrder(data.id)"
       >
         取消订单
+      </div> -->
+      <div
+        class="lookOrderDetail"
+        v-if="!isShowInfo.isMerchant && data.order_status == 1"
+        @click="ToPay(data.order_id)"
+      >
+        支付
       </div>
       <div
         class="sure"
@@ -44,7 +48,7 @@
       </div>
       <div
         class="sure"
-        @click="confirmReceipt(data.id)"
+        @click="confirmReceipt(data.order_id)"
         v-if="data.order_status == 3 && !isShowInfo.isMerchant"
       >
         确认收货
@@ -52,7 +56,7 @@
       <div
         class="sure"
         v-if="data.order_status == 4 && !isShowInfo.isMerchant"
-        @click="toComment(data.id)"
+        @click="toComment(data.order_id)"
       >
         评价
       </div>
@@ -77,7 +81,7 @@
         申请退货
       </div>
 
-      <div
+      <!-- <div
         class="deleteOrder"
         v-if="
           !isShowInfo.isDetail &&
@@ -86,7 +90,7 @@
         @click="deleteModal(data.id)"
       >
         删除
-      </div>
+      </div> -->
     </div>
     <pay-img-modal
       :Visible="visible"
@@ -120,6 +124,22 @@
       :orderId="orderId"
       @returnValue="getReturnStatus"
     ></confirm-receipt>
+
+    <el-dialog title="评价" :visible.sync="dialogFormVisible">
+      <a-form>
+        <a-form-item label="评价内容">
+          <a-input
+            type="textarea"
+            v-model="content"
+            autocomplete="off"
+          ></a-input>
+        </a-form-item>
+      </a-form>
+      <div slot="footer" class="dialog-footer">
+        <a-button @click="dialogFormVisible = false">取 消</a-button>
+        <a-button type="primary" @click="onSave">确 定</a-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -131,10 +151,12 @@
   import confirmReceipt from "../../modal/confirmReceipt";
 
   import { mapState } from "vuex";
-  import { _getData } from "../../../config/getData";
+  import { _getData, __getData } from "../../../config/getData";
+  import { Input, Form, FormItem } from "element-ui";
   export default {
     data() {
       return {
+        dialogFormVisible: false,
         sureOrderLoading: false,
         visible: false,
         sureVisible: false,
@@ -143,13 +165,16 @@
         deleteVisible: false,
         confirmVisible: false,
         type: "",
+        content: "",
         deleteObj: {
           isOrder: true,
           deleteId: ""
         },
-        orderId: -1
+        orderId: -1,
+        commentId: ""
       };
     },
+
     props: {
       data: {
         type: Object
@@ -167,18 +192,16 @@
     },
     methods: {
       toComment(orderId) {
-        _getData("/order/orderDetails", { id: orderId }).then(data => {
-          console.log("获取订单详情：", data);
-          if (data.order_status == 5) {
-            this.$message.warning("此订单已经评价，无需在评价");
-            this.$emit("returnValue", 4);
-          } else {
-            const { href } = this.$router.resolve({
-              path: `/userCenter/comment/${orderId}`,
-              query: { keyId: "3", topTitle: "sub1" }
-            });
-            window.open(href, "_blank");
-          }
+        this.commentId = orderId;
+        this.dialogFormVisible = true;
+      },
+      onSave() {
+        this.dialogFormVisible = false;
+        _getData("/api/comment/add", {
+          order_id: this.commentId,
+          info: this.content
+        }).then(() => {
+          location.reload();
         });
       },
       turnToProductDetail(id, storeId, isOnSale) {
@@ -192,6 +215,15 @@
           this.$message.warning("此产品已下架");
           return;
         }
+      },
+      ToPay(id) {
+        __getData("/api/order/orderStatusChange", {
+          orderId: id,
+          orderStatus: 2
+        }).then(() => {
+          this.$message.success("付款成功");
+          location.reload();
+        });
       },
       //确认订单
       confirmOrder(orderId) {
@@ -233,13 +265,20 @@
         });
       },
       //确认收货
-      confirmReceipt(orderId) {
-        if (!this.isLogin) {
-          this.type = "login";
-        } else {
-          this.confirmVisible = true;
-          this.orderId = orderId;
-        }
+      confirmReceipt(id) {
+        // if (!this.isLogin) {
+        //   this.type = "login";
+        // } else {
+        //   this.confirmVisible = true;
+        //   this.orderId = orderId;
+        // }
+        __getData("/api/order/orderStatusChange", {
+          orderId: id,
+          orderStatus: 4
+        }).then(() => {
+          // this.$message.success("付款成功");
+          location.reload();
+        });
       },
       //申请退货
       applicationReturn() {
@@ -335,7 +374,10 @@
       submitComment,
       submitPay,
       deleteOrder,
-      confirmReceipt
+      confirmReceipt,
+      Input,
+      Form,
+      FormItem
     }
   };
 </script>

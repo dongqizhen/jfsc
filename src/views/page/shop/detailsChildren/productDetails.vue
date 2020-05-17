@@ -111,26 +111,26 @@
                 </li>
               </ul>
               <no-data text="暂无规格参数" v-else></no-data>
-            </a-tab-pane>
-            <a-tab-pane
-              :tab="`产品评价(${data.count})`"
-              key="3"
-              :forceRender="true"
-            >
+            </a-tab-pane>-->
+            <a-tab-pane :tab="`产品评价`" key="3" :forceRender="true">
               <div v-if="comment && comment.length">
                 <ul class="evaluate">
                   <li v-for="(item, i) in comment" :key="i">
                     <div class="img_box">
-                      <svg class="icon" aria-hidden="true" v-if="!item.avatar">
+                      <svg
+                        class="icon"
+                        aria-hidden="true"
+                        v-if="!item.info_photo"
+                      >
                         <use xlink:href="#iconweidenglutouxiang"></use>
                       </svg>
-                      <img v-else :src="item.avatar" />
+                      <img v-else :src="item.info_photo" />
                     </div>
                     <div class="evaluate-container">
                       <div class="name">
-                        {{ item.nickname }}<span>{{ item.add_time }}</span>
+                        {{ item.username }}<span>{{ item.create_time }}</span>
                       </div>
-                      <ul class="rate-container">
+                      <!-- <ul class="rate-container">
                         <li
                           v-for="v in item.commentNameValue"
                           :key="v.icommentNameId"
@@ -159,11 +159,11 @@
                             </span>
                           </div>
                         </li>
-                      </ul>
+                      </ul> -->
                       <p>
-                        {{ item.content }}
+                        {{ item.info }}
                       </p>
-                      <div>
+                      <!-- <div>
                         <ul class="evaluate-img" v-if="item.pic_list.length">
                           <li
                             v-for="(pic, j) in item.pic_list"
@@ -194,7 +194,7 @@
                             <img v-if="showSrc" :src="showSrc" alt="" />
                           </transition>
                         </div>
-                      </div>
+                      </div> -->
                     </div>
                   </li>
                 </ul>
@@ -209,7 +209,7 @@
                 type="no-comment"
                 v-else
               ></no-data>
-            </a-tab-pane> -->
+            </a-tab-pane>
 
             <template slot="renderTabBar" slot-scope="props, DefaultTabBar">
               <component :is="DefaultTabBar" {...props} class="tab-affix" />
@@ -506,14 +506,14 @@
         });
       },
       async getCommentList(page = 1) {
-        return await _getData("/comment/commentList", {
-          goodId: this.$route.params.id,
-          currentPage: page,
-          countPerPage: 10
+        return await _getData("/api/comment/list", {
+          item_id: this.$route.params.id,
+          page,
+          size: 10
         }).then(data => {
           console.log("评价", data);
-          this.comment = data.data;
-          this.data = data;
+          this.comment = data.data.list;
+          this.data = data.data;
         });
       }
     },

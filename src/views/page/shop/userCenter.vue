@@ -48,11 +48,11 @@
               { key: "1", name: "我的订单", href: "/userCenter/myOrder" },
               // { key: "4", name: "我的报价", href: "/userCenter/myQuote" },
               // { key: "5", name: "我的收藏", href: "/userCenter/myStore" },
-              { key: "2", name: "地址管理", href: "/userCenter/addressManage" },
+              { key: "2", name: "地址管理", href: "/userCenter/addressManage" }
               // { key: "7", name: "发票管理", href: "/userCenter/invoiceManage" },
               // { key: "8", name: "个人信息", href: "/userCenter/myCenter" },
               // { key: "9", name: "消息中心", href: "/userCenter/myMessage" },
-              { key: "10", name: "账户余额", href: "/userCenter/userSecurity" }
+              // { key: "10", name: "账户余额", href: "/userCenter/userSecurity" }
             ]
           }
         ]
